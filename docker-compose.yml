@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+    # Nginx Service
+    nginx:
+        image: nginx:latest
+        container_name: nginx
+        ports:
+            - "8080:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        depends_on:
+            - php
+        networks:
+            - jqa-network
+
+    # MySQL Service
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: jqa
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - mysql-data:/var/lib/mysql
+        networks:
+            - jqa-network
+
+    # PHP Service
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        container_name: php
+        volumes:
+            - ./:/var/www
+        working_dir: /var/www
+        depends_on:
+            - mysql
+        command: >
+            bash -c "chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache &&
+                     chmod -R 775 /var/www/storage /var/www/bootstrap/cache &&
+                     php-fpm"
+        networks:
+            - jqa-network
+
+networks:
+    jqa-network:
+        driver: bridge
+
+volumes:
+    mysql-data:
