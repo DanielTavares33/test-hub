@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip
 
@@ -17,7 +18,13 @@ RUN docker-php-ext-install \
     exif \
     pcntl \
     bcmath \
-    gd
+    gd \
+    intl \
+    zip
+
+# Install Nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -31,9 +38,12 @@ COPY . /var/www
 # Install Laravel dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Fix permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Install Node.js dependencies (if package.json exists)
+RUN if [ -f package.json ]; then npm install; fi
+
+# Set ownership and permissions
+RUN chown -R www-data:www-data /var/www && \
+    chmod -R 775 /var/www  # Group write access
 
 # Change ownership
 RUN chown -R www-data:www-data /var/www
