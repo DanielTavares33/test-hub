@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TestCaseStep extends Model
 {
@@ -14,12 +15,12 @@ class TestCaseStep extends Model
     ];
 
     /**
-     * Belongs to Test Case relationship
+     * Belongs to Test Case
      *
      * @return BelongsTo
      */
-    public function testCase(): BelongsTo
+    public function testCase(): BelongsToMany
     {
-        return $this->belongsTo(TestCase::class);
+        return $this->belongsToMany(TestCase::class, 'test_cases')->withPivot('description', 'expected_result');
     }
 }

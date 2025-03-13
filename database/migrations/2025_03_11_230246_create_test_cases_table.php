@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('test_cases', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->string('title');
             $table->text('description');
             $table->enum('status', ['draft', 'active', 'passed', 'failed'])->default('draft');

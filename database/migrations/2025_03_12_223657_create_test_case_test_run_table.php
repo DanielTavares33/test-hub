@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('test_case_steps', function (Blueprint $table) {
+        Schema::create('test_case_test_run', function (Blueprint $table) {
             $table->id();
             $table->foreignId('test_case_id')->constrained('test_cases')->onDelete('cascade');
-            $table->text('description');
-            $table->string('expected_result');
+            $table->foreignId('test_run_id')->constrained('test_runs')->onDelete('cascade');
+            $table->enum('result', ['passed', 'failed', 'blocked'])->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('test_case_steps');
+        Schema::dropIfExists('test_case_test_run');
     }
 };
