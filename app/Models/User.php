@@ -47,7 +47,6 @@ class User extends Authenticatable
         ];
     }
 
-
     /**
      * Belongs to Many Projects
      *
