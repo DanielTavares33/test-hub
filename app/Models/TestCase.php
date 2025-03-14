@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\TestCasePriorityEnum;
+use App\TestCaseStatusEnum;
+use App\TestCaseTypeEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestCase extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,6 +26,17 @@ class TestCase extends Model
         'status',
         'priority',
         'type'
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @var string[]
+     */
+    protected $casts = [
+        'status' => TestCaseStatusEnum::class,
+        'priority' => TestCasePriorityEnum::class,
+        'type' => TestCaseTypeEnum::class
     ];
 
     /**
