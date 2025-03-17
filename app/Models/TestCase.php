@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\TestCasePriorityEnum;
-use App\TestCaseStatusEnum;
-use App\TestCaseTypeEnum;
+use App\Enums\TestCasePriorityEnum;
+use App\Enums\TestCaseStatusEnum;
+use App\Enums\TestCaseTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

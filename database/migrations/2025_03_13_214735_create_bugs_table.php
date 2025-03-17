@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('severity', ['low', 'medium', 'high'])->default('low');
+            $table->enum('severity', ['low', 'medium', 'high', 'critical'])->default('low');
             $table->timestamps();
         });
     }

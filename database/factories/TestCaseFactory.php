@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use App\Models\User;
-use App\TestCasePriorityEnum;
-use App\TestCaseStatusEnum;
-use App\TestCaseTypeEnum;
+use App\Enums\TestCasePriorityEnum;
+use App\Enums\TestCaseStatusEnum;
+use App\Enums\TestCaseTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

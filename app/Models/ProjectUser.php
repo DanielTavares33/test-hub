@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\ProjectUserRoleEnum;
+use App\Enums\ProjectUserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

@@ -2,11 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project;
-use App\Models\ProjectUser;
-use App\Models\TestCase;
+use App\Models\Bug;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Project;
+use App\Models\TestRun;
+use App\Models\TestCase;
+use App\Models\ProjectUser;
+use App\Models\TestCaseStep;
+use App\Models\TestCaseTestRun;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,7 +30,15 @@ class DatabaseSeeder extends Seeder
         Project::factory(3)->create();
 
         ProjectUser::factory(3)->create();
-        
-        TestCase::factory(10)->create();
+
+        TestCase::factory(20)->create();
+
+        TestCaseStep::factory(40)->create();
+
+        TestRun::factory(10)->create();
+
+        TestCaseTestRun::factory(10)->create();
+
+        Bug::factory(10)->create();
     }
 }
