@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,8 +24,6 @@ class Project extends Model
 
     /**
      * Belongs to Many Users
-     *
-     * @return BelongsToMany
      */
     public function users(): BelongsToMany
     {
@@ -31,8 +32,6 @@ class Project extends Model
 
     /**
      * Has Many Test Cases
-     *
-     * @return HasMany
      */
     public function testCases(): HasMany
     {
@@ -41,8 +40,6 @@ class Project extends Model
 
     /**
      * Has Many Test Runs
-     *
-     * @return HasMany
      */
     public function testRuns(): HasMany
     {

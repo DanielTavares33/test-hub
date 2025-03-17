@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('test_case_steps', function (Blueprint $table) {
             $table->id();
             $table->foreignId('test_case_id')->constrained('test_cases')->onDelete('cascade');
-            $table->text('description');
-            $table->string('expected_result');
+            $table->text('description')->nullable();
+            $table->text('expected_result')->nullable();
             $table->timestamps();
         });
     }

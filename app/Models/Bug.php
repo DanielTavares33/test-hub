@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Bug extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -24,8 +27,6 @@ class Bug extends Model
 
     /**
      * Belongs to Test Case
-     *
-     * @return BelongsTo
      */
     public function testCase(): BelongsTo
     {
@@ -34,8 +35,6 @@ class Bug extends Model
 
     /**
      * Belongs To Test Run
-     *
-     * @return BelongsTo
      */
     public function testRun(): BelongsTo
     {
@@ -44,8 +43,6 @@ class Bug extends Model
 
     /**
      * Belongs To User (reported_by)
-     *
-     * @return BelongsTo
      */
     public function reportedBy(): BelongsTo
     {
@@ -54,8 +51,6 @@ class Bug extends Model
 
     /**
      * Belongs To User (assigned_to)
-     *
-     * @return BelongsTo
      */
     public function assignedTo(): BelongsTo
     {

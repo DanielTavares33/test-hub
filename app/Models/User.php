@@ -49,8 +49,6 @@ class User extends Authenticatable
 
     /**
      * Belongs to Many Projects
-     *
-     * @return BelongsToMany
      */
     public function projects(): BelongsToMany
     {

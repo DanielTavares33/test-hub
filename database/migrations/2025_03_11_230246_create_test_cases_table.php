@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->enum('status', ['draft', 'active', 'passed', 'failed'])->default('draft');
             $table->enum('priority', ['low', 'medium', 'high'])->default('low');
-            $table->enum('type', ['functional', 'regression', 'smoke', 'manual'])->default('manual');
+            $table->enum('type', ['functional', 'regression', 'smoke', 'manual', 'e2e'])->default('manual');
             $table->timestamps();
         });
     }

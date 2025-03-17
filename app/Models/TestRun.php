@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\TestRunStatusEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestRun extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,9 +28,18 @@ class TestRun extends Model
     ];
 
     /**
-     * Belongs To Project
+     * The attributes that should be cast to native types.
      *
-     * @return BelongsTo
+     * @var array
+     */
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+        'status' => TestRunStatusEnum::class,
+    ];
+
+    /**
+     * Belongs To Project
      */
     public function project(): BelongsTo
     {
@@ -36,8 +48,6 @@ class TestRun extends Model
 
     /**
      * Belongs To User (assigned_to)
-     *
-     * @return BelongsTo
      */
     public function assignedTo(): BelongsTo
     {
@@ -46,8 +56,6 @@ class TestRun extends Model
 
     /**
      * Belongs To Many Test Cases
-     *
-     * @return BelongsToMany
      */
     public function testCases(): BelongsToMany
     {
