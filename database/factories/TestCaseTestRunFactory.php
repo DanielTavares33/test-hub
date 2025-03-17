@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\TestRun;
-use App\Models\TestCase;
 use App\Enums\TestCaseTestRunResultEnum;
+use App\Models\TestCase;
+use App\Models\TestRun;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +23,7 @@ class TestCaseTestRunFactory extends Factory
             'test_case_id' => rand(1, TestCase::all()->count()),
             'test_run_id' => rand(1, TestRun::all()->count()),
             'result' => $this->faker->randomElement(TestCaseTestRunResultEnum::class),
-            'comments' => $this->faker->text
+            'comments' => $this->faker->text,
         ];
     }
 }

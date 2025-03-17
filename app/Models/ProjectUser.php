@@ -21,7 +21,6 @@ class ProjectUser extends Model
         'role',
     ];
 
-
     /**
      * Get the attributes that should be cast.
      *

@@ -25,7 +25,7 @@ class TestCase extends Model
         'description',
         'status',
         'priority',
-        'type'
+        'type',
     ];
 
     /**
@@ -36,13 +36,11 @@ class TestCase extends Model
     protected $casts = [
         'status' => TestCaseStatusEnum::class,
         'priority' => TestCasePriorityEnum::class,
-        'type' => TestCaseTypeEnum::class
+        'type' => TestCaseTypeEnum::class,
     ];
 
     /**
      * Has Many Bugs
-     *
-     * @return HasMany
      */
     public function bugs(): HasMany
     {
@@ -51,18 +49,14 @@ class TestCase extends Model
 
     /**
      * Belongs to Many Test Runs
-     *
-     * @return BelongsToMany
      */
-    public function testRuns(): BelongsToMany
+    public function test_runs(): BelongsToMany
     {
         return $this->belongsToMany(TestRun::class, 'test_case_test_run')->withPivot('result', 'comments');
     }
 
     /**
      * Belongs to User (created_by)
-     *
-     * @return BelongsTo
      */
     public function createdBy(): BelongsTo
     {
@@ -71,8 +65,6 @@ class TestCase extends Model
 
     /**
      * Belongs to a Project
-     *
-     * @return BelongsTo
      */
     public function project(): BelongsTo
     {
@@ -81,10 +73,8 @@ class TestCase extends Model
 
     /**
      * Test case steps HasMany relationship
-     *
-     * @return HasMany
      */
-    public function testCaseSteps(): HasMany
+    public function test_case_steps(): HasMany
     {
         return $this->hasMany(TestCaseStep::class);
     }

@@ -20,7 +20,7 @@ class TestCaseStepFactory extends Factory
         return [
             'test_case_id' => rand(1, TestCase::all()->count()),
             'description' => $this->faker->paragraph(),
-            'expected_result' => $this->faker->paragraph()
+            'expected_result' => $this->faker->paragraph(),
         ];
     }
 }

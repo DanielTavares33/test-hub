@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Enums\TestRunStatusEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TestRun extends Model
@@ -40,8 +40,6 @@ class TestRun extends Model
 
     /**
      * Belongs To Project
-     *
-     * @return BelongsTo
      */
     public function project(): BelongsTo
     {
@@ -50,8 +48,6 @@ class TestRun extends Model
 
     /**
      * Belongs To User (assigned_to)
-     *
-     * @return BelongsTo
      */
     public function assignedTo(): BelongsTo
     {
@@ -60,8 +56,6 @@ class TestRun extends Model
 
     /**
      * Belongs To Many Test Cases
-     *
-     * @return BelongsToMany
      */
     public function testCases(): BelongsToMany
     {

@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Project;
-use App\Models\User;
 use App\Enums\TestCasePriorityEnum;
 use App\Enums\TestCaseStatusEnum;
 use App\Enums\TestCaseTypeEnum;
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

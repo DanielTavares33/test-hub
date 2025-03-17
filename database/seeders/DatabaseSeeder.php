@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Bug;
-use App\Models\User;
 use App\Models\Project;
-use App\Models\TestRun;
-use App\Models\TestCase;
 use App\Models\ProjectUser;
+use App\Models\TestCase;
 use App\Models\TestCaseStep;
 use App\Models\TestCaseTestRun;
+use App\Models\TestRun;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 

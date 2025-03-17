@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\TestRun;
-use App\Models\TestCase;
 use App\Enums\BugSeverityEnum;
+use App\Models\TestCase;
+use App\Models\TestRun;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

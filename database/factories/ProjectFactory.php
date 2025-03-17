@@ -20,7 +20,7 @@ class ProjectFactory extends Factory
         return [
             'user_id' => rand(1, User::all()->count()),
             'name' => $this->faker->name(),
-            'active' => $this->faker->boolean()
+            'active' => $this->faker->boolean(),
         ];
     }
 }
