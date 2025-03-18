@@ -29,9 +29,9 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin'),
         ]);
 
-        Project::factory(3)->create();
+        Project::factory(5)->create();
 
-        ProjectUser::factory(3)->create();
+        ProjectUser::factory(5)->create();
 
         TestCase::factory(20)->create();
 

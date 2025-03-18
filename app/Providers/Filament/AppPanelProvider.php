@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\ProjectResource;
 use App\Filament\Resources\RoleResource;
 use App\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
@@ -43,6 +44,7 @@ class AppPanelProvider extends PanelProvider
                     NavigationGroup::make()
                         ->items([
                             ...Dashboard::getNavigationItems(),
+                            ...ProjectResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make('Settings')
                         ->items([

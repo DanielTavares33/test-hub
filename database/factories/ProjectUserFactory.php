@@ -22,7 +22,6 @@ class ProjectUserFactory extends Factory
         return [
             'project_id' => rand(1, Project::all()->count()),
             'user_id' => rand(1, User::all()->count()),
-            'role' => $this->faker->randomElement(ProjectUserRoleEnum::class),
         ];
     }
 }
