@@ -65,9 +65,6 @@ class User extends Authenticatable
 
     /**
      * Check if the user has a role
-     *
-     * @param string $role
-     * @return bool
      */
     public function hasRole(string $role): bool
     {
