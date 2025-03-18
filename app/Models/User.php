@@ -54,4 +54,23 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'project_user')->withPivot('role');
     }
+
+    /**
+     * Belongs to Many Roles
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    /**
+     * Check if the user has a role
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
 }
