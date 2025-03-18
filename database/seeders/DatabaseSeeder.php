@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Bug;
 use App\Models\Project;
 use App\Models\ProjectUser;
+use App\Models\Role;
 use App\Models\TestCase;
 use App\Models\TestCaseStep;
 use App\Models\TestCaseTestRun;
@@ -40,5 +41,10 @@ class DatabaseSeeder extends Seeder
         TestCaseTestRun::factory(10)->create();
 
         Bug::factory(10)->create();
+
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'tester']);
+        Role::create(['name' => 'developer']);
+        Role::create(['name' => 'guest']);
     }
 }
