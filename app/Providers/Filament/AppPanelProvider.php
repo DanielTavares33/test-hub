@@ -51,11 +51,6 @@ class AppPanelProvider extends PanelProvider
                         ]),
                 ]);
             })
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label('Settings')
-                    ->icon('heroicon-o-cog'),
-            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
