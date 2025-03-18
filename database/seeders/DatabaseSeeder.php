@@ -6,6 +6,7 @@ use App\Models\Bug;
 use App\Models\Project;
 use App\Models\ProjectUser;
 use App\Models\Role;
+use App\Models\RoleUser;
 use App\Models\TestCase;
 use App\Models\TestCaseStep;
 use App\Models\TestCaseTestRun;
@@ -46,5 +47,9 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'tester']);
         Role::create(['name' => 'developer']);
         Role::create(['name' => 'guest']);
+        RoleUser::create([
+            'role_id' => Role::where('name', 'admin')->first()->id,
+            'user_id' => User::where('email', 'admin@admin.com')->first()->id,
+        ]);
     }
 }
