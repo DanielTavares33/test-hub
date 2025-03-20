@@ -2,29 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Forms\Components\Section;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ProjectResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ProjectResource\RelationManagers;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'carbon-industry';
 
-
-    // TODO: Projects table has user_id column, create a relation table for it
     public static function form(Form $form): Form
     {
         return $form
@@ -37,7 +35,14 @@ class ProjectResource extends Resource
                             ->minLength(3)
                             ->maxLength(255)
                             ->autofocus(),
-                    ])
+                        Toggle::make('status')
+                            ->label('Is Active')
+                            ->default(false),
+                        Textarea::make('description')
+                            ->label('Description')
+                            ->nullable()
+                            ->rows(3),
+                    ]),
             ]);
     }
 
@@ -52,6 +57,17 @@ class ProjectResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Name'),
+                TextColumn::make('users')
+                    ->label('Users')
+                    ->badge()
+                    ->sortable()
+                    ->state(function (Project $project) {
+                        return $project->users()->count();
+                    }),
+                ToggleColumn::make('status')
+                    ->label('Is Active'),
+                TextColumn::make('description')
+                    ->label('Description'),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->label('Created At'),
@@ -66,10 +82,12 @@ class ProjectResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
-                    ->color(Color::Amber),
+                    ->color(Color::Amber)
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
                 Tables\Actions\DeleteAction::make()
                     ->hiddenLabel()
-                    ->tooltip('Delete'),
+                    ->tooltip('Delete')
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
             ])
             ->defaultSort('id', 'desc');
     }

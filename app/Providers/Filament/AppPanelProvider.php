@@ -22,6 +22,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
@@ -48,8 +49,8 @@ class AppPanelProvider extends PanelProvider
                         ]),
                     NavigationGroup::make('Settings')
                         ->items([
-                            ...UserResource::getNavigationItems(),
-                            ...RoleResource::getNavigationItems(),
+                            ...(Auth::user()->hasRole('admin') ? UserResource::getNavigationItems() : []),
+                            ...(Auth::user()->hasRole('admin') ? RoleResource::getNavigationItems() : []),
                         ]),
                 ]);
             })
