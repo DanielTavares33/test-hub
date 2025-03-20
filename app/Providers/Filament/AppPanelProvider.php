@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\ProjectResource;
 use App\Filament\Resources\RoleResource;
 use App\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
@@ -21,6 +22,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
@@ -43,11 +45,12 @@ class AppPanelProvider extends PanelProvider
                     NavigationGroup::make()
                         ->items([
                             ...Dashboard::getNavigationItems(),
+                            ...ProjectResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make('Settings')
                         ->items([
-                            ...UserResource::getNavigationItems(),
-                            ...RoleResource::getNavigationItems(),
+                            ...(Auth::user()->hasRole('admin') ? UserResource::getNavigationItems() : []),
+                            ...(Auth::user()->hasRole('admin') ? RoleResource::getNavigationItems() : []),
                         ]),
                 ]);
             })

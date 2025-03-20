@@ -2,30 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\Role;
-use App\Models\User;
+use App\Filament\Resources\ProjectResource\Pages;
+use App\Models\Project;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
-class UserResource extends Resource
+class ProjectResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-
-    public static function canAccess(): bool
-    {
-        return Auth::user()->hasRole('admin');
-    }
+    protected static ?string $navigationIcon = 'carbon-industry';
 
     public static function form(Form $form): Form
     {
@@ -39,16 +35,13 @@ class UserResource extends Resource
                             ->minLength(3)
                             ->maxLength(255)
                             ->autofocus(),
-                        TextInput::make('email')
-                            ->label('Email')
-                            ->email()
-                            ->maxLength(255)
-                            ->required(),
-                        Select::make('role')
-                            ->relationship('roles', 'name')
-                            ->label('Role')
-                            ->in(Role::all()->pluck('id')->toArray())
-                            ->required(),
+                        Toggle::make('status')
+                            ->label('Is Active')
+                            ->default(false),
+                        Textarea::make('description')
+                            ->label('Description')
+                            ->nullable()
+                            ->rows(3),
                     ]),
             ]);
     }
@@ -64,13 +57,17 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Name'),
-                TextColumn::make('email')
-                    ->searchable()
+                TextColumn::make('users')
+                    ->label('Users')
+                    ->badge()
                     ->sortable()
-                    ->copyable()
-                    ->label('Email'),
-                TextColumn::make('roles.name')
-                    ->label('Role'),
+                    ->state(function (Project $project) {
+                        return $project->users()->count();
+                    }),
+                ToggleColumn::make('status')
+                    ->label('Is Active'),
+                TextColumn::make('description')
+                    ->label('Description'),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->label('Created At'),
@@ -85,7 +82,12 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
-                    ->color(Color::Amber),
+                    ->color(Color::Amber)
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
+                Tables\Actions\DeleteAction::make()
+                    ->hiddenLabel()
+                    ->tooltip('Delete')
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
             ])
             ->defaultSort('id', 'desc');
     }
@@ -100,7 +102,7 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
+            'index' => Pages\ListProjects::route('/'),
         ];
     }
 }
