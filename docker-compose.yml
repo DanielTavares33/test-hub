@@ -4,7 +4,7 @@ services:
     # Nginx Service
     nginx:
         image: nginx:latest
-        container_name: nginx
+        container_name: testhub-nginx
         ports:
             - "8080:80"
         volumes:
@@ -13,28 +13,28 @@ services:
         depends_on:
             - php
         networks:
-            - test-management-network
+            - testhub-network
 
     # MySQL Service
     mysql:
         image: mysql:8.0
-        container_name: mysql
+        container_name: testhub-mysql
         ports:
             - "3306:3306"
         environment:
-            MYSQL_DATABASE: test-management
+            MYSQL_DATABASE: testhub
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
             - mysql-data:/var/lib/mysql
         networks:
-            - test-management-network
+            - testhub-network
 
     # PHP Service
     php:
         build:
             context: .
             dockerfile: docker/php/Dockerfile
-        container_name: php
+        container_name: testhub-php
         volumes:
             - ./:/var/www
         working_dir: /var/www
@@ -45,10 +45,10 @@ services:
                     chmod -R 775 /var/www/storage /var/www/bootstrap/cache &&
                     php-fpm"
         networks:
-            - test-management-network
+            - testhub-network
 
 networks:
-    test-management-network:
+    testhub-network:
         driver: bridge
 
 volumes:
