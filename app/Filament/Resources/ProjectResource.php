@@ -60,7 +60,7 @@ class ProjectResource extends Resource
                 TextColumn::make('description')
                     ->label('Description')
                     ->limit(20)
-                    ->tooltip(fn($state) => $state),
+                    ->tooltip(fn ($state) => $state),
                 TextColumn::make('users')
                     ->label('Users')
                     ->badge()
@@ -102,11 +102,11 @@ class ProjectResource extends Resource
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber)
-                    ->visible(fn() => Auth::user()->hasRole('admin')),
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
                 Tables\Actions\DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete')
-                    ->visible(fn() => Auth::user()->hasRole('admin')),
+                    ->visible(fn () => Auth::user()->hasRole('admin')),
             ])
             ->defaultSort('id', 'desc');
     }

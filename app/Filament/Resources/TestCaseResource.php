@@ -2,18 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\TestCaseResource\Pages;
 use App\Models\TestCase;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\TestCaseResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\TestCaseResource\RelationManagers;
+use Filament\Tables\Table;
 
 class TestCaseResource extends Resource
 {
@@ -42,7 +38,7 @@ class TestCaseResource extends Resource
                     ->formatStateUsing(function ($state) {
                         if ($state->value === 'e2e') {
                             return 'E2E';
-                        };
+                        }
 
                         return ucfirst($state->value);
                     })
@@ -57,25 +53,25 @@ class TestCaseResource extends Resource
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn($state): string => match ($state->value) {
+                    ->color(fn ($state): string => match ($state->value) {
                         'passed' => 'success',
                         'failed' => 'danger',
                         'active' => 'info',
                         'draft' => 'gray',
                         default => 'secondary',
                     })
-                    ->formatStateUsing(fn($state) => ucfirst($state->value))
+                    ->formatStateUsing(fn ($state) => ucfirst($state->value))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('priority')
                     ->badge()
-                    ->color(fn($state): string => match ($state->value) {
+                    ->color(fn ($state): string => match ($state->value) {
                         'high' => 'danger',
                         'medium' => 'warning',
                         'low' => 'success',
                         default => 'secondary',
                     })
-                    ->formatStateUsing(fn($state) => ucfirst($state->value))
+                    ->formatStateUsing(fn ($state) => ucfirst($state->value))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
