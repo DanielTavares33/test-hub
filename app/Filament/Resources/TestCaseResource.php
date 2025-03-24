@@ -2,14 +2,25 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\TestCasePriorityEnum;
+use App\Enums\TestCaseStatusEnum;
+use App\Enums\TestCaseTypeEnum;
 use App\Filament\Resources\TestCaseResource\Pages;
 use App\Models\TestCase;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class TestCaseResource extends Resource
 {
@@ -17,11 +28,90 @@ class TestCaseResource extends Resource
 
     protected static ?string $navigationIcon = 'carbon-document';
 
+    // TODO: Add validation rules for the form fields
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Split::make([
+                    Section::make()
+                        ->schema([
+                            Select::make('project')
+                                ->relationship(name: 'project', titleAttribute: 'name')
+                                ->required()
+                                ->columnSpanFull(),
+                            Select::make('createdBy')
+                                ->relationship(name: 'createdBy', titleAttribute: 'name')
+                                ->default(Auth::id())
+                                ->disabled(function () {
+                                    return ! Auth::user()->hasRole('admin');
+                                })
+                                ->columnSpan(1),
+                            Select::make('type')
+                                ->options(TestCaseTypeEnum::class)
+                                ->required()
+                                ->columnSpan(1),
+                            Select::make('status')
+                                ->options(TestCaseStatusEnum::class)
+                                ->required()
+                                ->columnSpan(1)
+                                ->default(TestCaseStatusEnum::Draft),
+                            Select::make('priority')
+                                ->options(TestCasePriorityEnum::class)
+                                ->required()
+                                ->columnSpan(1)
+                                ->default(TestCasePriorityEnum::Low),
+                        ])->columns(),
+                    Section::make()
+                        ->schema([
+                            TextInput::make('title')
+                                ->label('Title')
+                                ->required()
+                                ->minLength(3)
+                                ->maxLength(255),
+                            Textarea::make('description')
+                                ->label('Description')
+                                ->nullable()
+                                ->rows(5),
+                        ]),
+                ])->columnSpanFull(),
+                Section::make('Steps')
+                    ->description('Write the steps to reproduce the test case.')
+                    ->schema([
+                        Repeater::make('testCaseSteps')
+                            ->hiddenLabel()
+                            ->relationship()
+                            ->reorderable()
+                            ->columns()
+                            ->schema([
+                                MarkdownEditor::make('description')
+                                    ->label('Step')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                        'bulletList',
+                                        'orderedList',
+                                        'link',
+                                        'codeBlock',
+                                    ])
+                                    ->required()
+                                    ->minLength(3)
+                                    ->columnSpan(1),
+                                MarkdownEditor::make('expected_result')
+                                    ->label('Expected Result')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                        'bulletList',
+                                        'orderedList',
+                                        'link',
+                                        'codeBlock',
+                                    ])
+                                    ->required()
+                                    ->minLength(3)
+                                    ->columnSpan(1),
+                            ])->addActionLabel('Add Step'),
+                    ]),
             ]);
     }
 

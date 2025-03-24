@@ -50,7 +50,7 @@ class TestCase extends Model
     /**
      * Belongs to Many Test Runs
      */
-    public function test_runs(): BelongsToMany
+    public function testRuns(): BelongsToMany
     {
         return $this->belongsToMany(TestRun::class, 'test_case_test_run')->withPivot('result', 'comments');
     }
@@ -74,8 +74,8 @@ class TestCase extends Model
     /**
      * Test case steps HasMany relationship
      */
-    public function test_case_steps(): HasMany
+    public function testCaseSteps(): HasMany
     {
-        return $this->hasMany(TestCaseStep::class);
+        return $this->hasMany(TestCaseStep::class, 'test_case_id');
     }
 }
