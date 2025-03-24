@@ -57,17 +57,36 @@ class ProjectResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Name'),
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->limit(20)
+                    ->tooltip(fn($state) => $state),
                 TextColumn::make('users')
                     ->label('Users')
                     ->badge()
                     ->sortable()
                     ->state(function (Project $project) {
                         return $project->users()->count();
-                    }),
+                    })
+                    ->alignCenter(),
+                TextColumn::make('projectTestCases')
+                    ->label('Test Cases')
+                    ->badge()
+                    ->sortable()
+                    ->state(function (Project $project) {
+                        return $project->projectTestCases()->count();
+                    })
+                    ->alignCenter(),
+                TextColumn::make('projectTestRuns')
+                    ->label('Test Runs')
+                    ->badge()
+                    ->sortable()
+                    ->state(function (Project $project) {
+                        return $project->projectTestRuns()->count();
+                    })
+                    ->alignCenter(),
                 ToggleColumn::make('status')
                     ->label('Is Active'),
-                TextColumn::make('description')
-                    ->label('Description'),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->label('Created At'),
@@ -83,11 +102,11 @@ class ProjectResource extends Resource
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber)
-                    ->visible(fn () => Auth::user()->hasRole('admin')),
+                    ->visible(fn() => Auth::user()->hasRole('admin')),
                 Tables\Actions\DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete')
-                    ->visible(fn () => Auth::user()->hasRole('admin')),
+                    ->visible(fn() => Auth::user()->hasRole('admin')),
             ])
             ->defaultSort('id', 'desc');
     }

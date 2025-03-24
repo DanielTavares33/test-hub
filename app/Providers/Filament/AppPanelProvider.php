@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\ProjectResource;
 use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\TestCaseResource;
 use App\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -46,6 +47,10 @@ class AppPanelProvider extends PanelProvider
                         ->items([
                             ...Dashboard::getNavigationItems(),
                             ...ProjectResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Test Cases')
+                        ->items([
+                            ...TestCaseResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make('Settings')
                         ->items([

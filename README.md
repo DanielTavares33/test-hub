@@ -53,9 +53,13 @@ Clone project
   php artisan key:generate
 ```
 
+#### Enjoy
+
+```bash
+  http://localhost:8080
+``` 
 
 ## Login Locally
 
 - User: admin@admin.com
 - Password: admin
-

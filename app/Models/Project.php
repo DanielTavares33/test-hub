@@ -45,4 +45,20 @@ class Project extends Model
     {
         return $this->hasMany(TestRun::class);
     }
+
+    /**
+     * Belongs to Many Test Cases
+     */
+    public function projectTestCases()
+    {
+        return $this->belongsToMany(TestCase::class, 'project_test_cases');
+    }
+
+    /**
+     * Belongs to Many Test Runs
+     */
+    public function projectTestRuns()
+    {
+        return $this->belongsToMany(TestRun::class, 'project_test_runs');
+    }
 }
