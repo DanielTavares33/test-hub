@@ -28,7 +28,6 @@ class TestCaseResource extends Resource
 
     protected static ?string $navigationIcon = 'carbon-document';
 
-    // TODO: Add validation rules for the form fields
     public static function form(Form $form): Form
     {
         return $form
@@ -36,17 +35,27 @@ class TestCaseResource extends Resource
                 Split::make([
                     Section::make()
                         ->schema([
+                            TextInput::make('title')
+                                ->label('Title')
+                                ->required()
+                                ->minLength(3)
+                                ->maxLength(255),
+                            Textarea::make('description')
+                                ->label('Description')
+                                ->nullable()
+                                ->rows(5)
+                                ->maxLength(500)
+                                ->minLength(3),
+                        ]),
+                    Section::make()
+                        ->schema([
                             Select::make('project')
-                                ->relationship(name: 'project', titleAttribute: 'name')
+                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query) {
+                                    # TODO: When editing a record, the disabled project shows the id instead of the name.
+                                    return $query->where('status', true);
+                                })
                                 ->required()
                                 ->columnSpanFull(),
-                            Select::make('createdBy')
-                                ->relationship(name: 'createdBy', titleAttribute: 'name')
-                                ->default(Auth::id())
-                                ->disabled(function () {
-                                    return ! Auth::user()->hasRole('admin');
-                                })
-                                ->columnSpan(1),
                             Select::make('type')
                                 ->options(TestCaseTypeEnum::class)
                                 ->required()
@@ -61,19 +70,14 @@ class TestCaseResource extends Resource
                                 ->required()
                                 ->columnSpan(1)
                                 ->default(TestCasePriorityEnum::Low),
+                            Select::make('createdBy')
+                                ->relationship(name: 'createdBy', titleAttribute: 'name')
+                                ->default(Auth::id())
+                                ->disabled(function () {
+                                    return ! Auth::user()->hasRole('admin');
+                                })
+                                ->columnSpan(1),
                         ])->columns(),
-                    Section::make()
-                        ->schema([
-                            TextInput::make('title')
-                                ->label('Title')
-                                ->required()
-                                ->minLength(3)
-                                ->maxLength(255),
-                            Textarea::make('description')
-                                ->label('Description')
-                                ->nullable()
-                                ->rows(5),
-                        ]),
                 ])->columnSpanFull(),
                 Section::make('Steps')
                     ->description('Write the steps to reproduce the test case.')
@@ -93,6 +97,7 @@ class TestCaseResource extends Resource
                                         'orderedList',
                                         'link',
                                         'codeBlock',
+                                        'table'
                                     ])
                                     ->required()
                                     ->minLength(3)
@@ -106,11 +111,13 @@ class TestCaseResource extends Resource
                                         'orderedList',
                                         'link',
                                         'codeBlock',
+                                        'table'
                                     ])
                                     ->required()
                                     ->minLength(3)
                                     ->columnSpan(1),
-                            ])->addActionLabel('Add Step'),
+                            ])
+                            ->addActionLabel('Add Step'),
                     ]),
             ]);
     }
@@ -143,25 +150,25 @@ class TestCaseResource extends Resource
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn ($state): string => match ($state->value) {
+                    ->color(fn($state): string => match ($state->value) {
                         'passed' => 'success',
                         'failed' => 'danger',
                         'active' => 'info',
                         'draft' => 'gray',
                         default => 'secondary',
                     })
-                    ->formatStateUsing(fn ($state) => ucfirst($state->value))
+                    ->formatStateUsing(fn($state) => ucfirst($state->value))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('priority')
                     ->badge()
-                    ->color(fn ($state): string => match ($state->value) {
+                    ->color(fn($state): string => match ($state->value) {
                         'high' => 'danger',
                         'medium' => 'warning',
                         'low' => 'success',
                         default => 'secondary',
                     })
-                    ->formatStateUsing(fn ($state) => ucfirst($state->value))
+                    ->formatStateUsing(fn($state) => ucfirst($state->value))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
