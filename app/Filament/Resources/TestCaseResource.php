@@ -50,8 +50,11 @@ class TestCaseResource extends Resource
                     Section::make()
                         ->schema([
                             Select::make('project')
-                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query) {
-                                    # TODO: When editing a record, the disabled project shows the id instead of the name.
+                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query, $record) {
+                                    if ($record) {
+                                        return $query->where('id', $record->project_id);
+                                    }
+
                                     return $query->where('status', true);
                                 })
                                 ->required()
