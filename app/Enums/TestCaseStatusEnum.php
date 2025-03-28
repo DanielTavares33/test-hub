@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum TestCaseStatusEnum: string
 {
-    case DRAFT = 'draft';
-    case ACTIVE = 'active';
-    case PASSED = 'passed';
-    case FAILED = 'failed';
+    case Draft = 'draft';
+    case Active = 'active';
+    case Passed = 'passed';
+    case Failed = 'failed';
 }

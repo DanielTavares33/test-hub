@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Bug;
 use App\Models\Project;
+use App\Models\ProjectTestCase;
+use App\Models\ProjectTestRun;
 use App\Models\ProjectUser;
 use App\Models\Role;
 use App\Models\RoleUser;
@@ -51,5 +53,8 @@ class DatabaseSeeder extends Seeder
             'role_id' => Role::where('name', 'admin')->first()->id,
             'user_id' => User::where('email', 'admin@admin.com')->first()->id,
         ]);
+
+        ProjectTestCase::factory(40)->create();
+        ProjectTestRun::factory(10)->create();
     }
 }

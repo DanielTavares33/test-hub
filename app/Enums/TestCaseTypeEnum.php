@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum TestCaseTypeEnum: string
 {
-    case FUNCTIONAL = 'functional';
-    case REGRESSION = 'regression';
-    case SMOKE = 'smoke';
-    case MANUAL = 'manual';
+    case Functional = 'functional';
+    case Regression = 'regression';
+    case Smoke = 'smoke';
+    case Manual = 'manual';
     case E2E = 'e2e';
 }
