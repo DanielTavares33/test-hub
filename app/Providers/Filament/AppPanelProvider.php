@@ -51,7 +51,7 @@ class AppPanelProvider extends PanelProvider
                             ...Dashboard::getNavigationItems(),
                             ...ProjectResource::getNavigationItems(),
                         ]),
-                    NavigationGroup::make('Test Cases')
+                    NavigationGroup::make('Design')
                         ->items([
                             ...TestCaseResource::getNavigationItems(),
                         ]),

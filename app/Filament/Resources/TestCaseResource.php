@@ -26,7 +26,7 @@ class TestCaseResource extends Resource
 {
     protected static ?string $model = TestCase::class;
 
-    protected static ?string $navigationIcon = 'carbon-document';
+    protected static ?string $navigationIcon = 'heroicon-o-pencil';
 
     public static function form(Form $form): Form
     {
