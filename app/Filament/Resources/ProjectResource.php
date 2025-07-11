@@ -52,6 +52,7 @@ class ProjectResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('#'),
                 TextColumn::make('name')
                     ->searchable()
@@ -86,12 +87,15 @@ class ProjectResource extends Resource
                     })
                     ->alignCenter(),
                 ToggleColumn::make('status')
-                    ->label('Is Active'),
+                    ->label('Is Active')
+                    ->disabled(fn () => Auth::user()->hasRole('guest')),
                 TextColumn::make('created_at')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Created At'),
                 TextColumn::make('updated_at')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Updated At'),
             ])
             ->filters([

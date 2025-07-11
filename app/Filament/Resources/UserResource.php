@@ -63,6 +63,9 @@ class UserResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return ucfirst($state);
+                    })
                     ->label('Name'),
                 TextColumn::make('email')
                     ->searchable()
@@ -70,6 +73,10 @@ class UserResource extends Resource
                     ->copyable()
                     ->label('Email'),
                 TextColumn::make('roles.name')
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return ucfirst($state);
+                    })
                     ->label('Role'),
                 TextColumn::make('created_at')
                     ->sortable()

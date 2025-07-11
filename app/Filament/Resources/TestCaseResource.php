@@ -2,31 +2,47 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\TestCasePriorityEnum;
-use App\Enums\TestCaseStatusEnum;
-use App\Enums\TestCaseTypeEnum;
-use App\Filament\Resources\TestCaseResource\Pages;
-use App\Models\TestCase;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Split;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\TestCase;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Enums\TestCaseTypeEnum;
+use Filament\Resources\Resource;
+use App\Enums\TestCaseStatusEnum;
+use Filament\Support\Colors\Color;
+use App\Enums\TestCasePriorityEnum;
+use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\MarkdownEditor;
+use App\Filament\Resources\TestCaseResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 
 class TestCaseResource extends Resource
 {
     protected static ?string $model = TestCase::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-pencil';
+
+    public static function canEdit($record): bool
+    {
+        return ! Auth::user()->hasRole('guest');
+    }
+
+    public static function canCreate(): bool
+    {
+        return ! Auth::user()->hasRole('guest');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return ! Auth::user()->hasRole('guest');
+    }
 
     public static function form(Form $form): Form
     {
@@ -35,18 +51,26 @@ class TestCaseResource extends Resource
                 Split::make([
                     Section::make()
                         ->schema([
+                            TextInput::make('name')
+                                ->label('Name')
+                                ->required()
+                                ->minLength(3)
+                                ->maxLength(255)
+                                ->columnSpan(1),
                             TextInput::make('title')
                                 ->label('Title')
                                 ->required()
                                 ->minLength(3)
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->columnSpan(1),
                             Textarea::make('description')
                                 ->label('Description')
                                 ->nullable()
                                 ->rows(5)
                                 ->maxLength(500)
-                                ->minLength(3),
-                        ]),
+                                ->minLength(3)
+                                ->columnSpanFull(),
+                        ])->columns(),
                     Section::make()
                         ->schema([
                             Select::make('project')
@@ -131,6 +155,7 @@ class TestCaseResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->label('#')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('type')
                     ->badge()
@@ -142,6 +167,10 @@ class TestCaseResource extends Resource
 
                         return ucfirst($state->value);
                     })
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('name')
+                    ->label('Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('project.name')
@@ -176,22 +205,47 @@ class TestCaseResource extends Resource
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Created At')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('updated_at')
                     ->label('Updated At')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])
+            ->defaultSort(fn (Builder $query): Builder => $query
+                ->orderByRaw('FIELD(status, "draft", "active", "pending", "failed", "passed")')
+            )
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(TestCaseStatusEnum::class)
+                    ->label('Status'),
+                Tables\Filters\SelectFilter::make('priority')
+                    ->options(TestCasePriorityEnum::class)
+                    ->label('Priority'),
+                Tables\Filters\SelectFilter::make('type')
+                    ->options(TestCaseTypeEnum::class)
+                    ->label('Type'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
-                    ->color(Color::Amber),
+                    ->color(Color::Amber)
+                    ->hidden(function () {
+                        return Auth::user()->hasRole('guest');
+                    }),
                 Tables\Actions\DeleteAction::make()
                     ->hiddenLabel()
-                    ->tooltip('Delete'),
+                    ->tooltip('Delete')
+                    ->hidden(function () {
+                        return Auth::user()->hasRole('guest');
+                    }),
+                Tables\Actions\ViewAction::make()
+                    ->hiddenLabel()
+                    ->tooltip('View')
+                    ->hidden(function () {
+                        return Auth::user()->hasRole('admin') || Auth::user()->hasRole('tester') || Auth::user()->hasRole('developer');
+                    }),
             ]);
     }
 

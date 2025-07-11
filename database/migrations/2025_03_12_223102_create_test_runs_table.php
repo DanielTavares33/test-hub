@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
-            $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'running', 'completed'])->default('pending');
             $table->timestamps();
         });
     }

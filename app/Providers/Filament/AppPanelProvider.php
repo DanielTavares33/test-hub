@@ -2,30 +2,31 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\ProjectResource;
-use App\Filament\Resources\RoleResource;
-use App\Filament\Resources\TestCaseResource;
-use App\Filament\Resources\UserResource;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
+use Filament\Widgets;
 use Filament\PanelProvider;
+use Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\UserResource;
+use Filament\Navigation\NavigationGroup;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\ProjectResource;
+use App\Filament\Resources\TestRunResource;
+use App\Filament\Resources\TestCaseResource;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -54,6 +55,10 @@ class AppPanelProvider extends PanelProvider
                     NavigationGroup::make('Design')
                         ->items([
                             ...TestCaseResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Build')
+                        ->items([
+                            ...TestRunResource::getNavigationItems(),
                         ]),
                     NavigationGroup::make('Settings')
                         ->items([

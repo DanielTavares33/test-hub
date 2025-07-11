@@ -24,6 +24,7 @@ class TestCaseFactory extends Factory
         return [
             'project_id' => rand(1, Project::all()->count()),
             'created_by' => rand(1, User::all()->count()),
+            'name' => $this->faker->word(),
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement(TestCaseStatusEnum::class),

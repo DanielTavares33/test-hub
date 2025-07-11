@@ -5,9 +5,10 @@ namespace App\Models;
 use App\Enums\TestCaseTestRunResultEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $test_case_id
@@ -43,6 +44,8 @@ class TestCaseTestRun extends Model
     protected $fillable = [
         'test_case_id',
         'test_run_id',
+        'result',
+        'comments',
     ];
 
     /**
@@ -53,4 +56,20 @@ class TestCaseTestRun extends Model
     protected $casts = [
         'result' => TestCaseTestRunResultEnum::class,
     ];
+
+    /**
+     * Belongs To Test Case
+     */
+    public function testCase(): BelongsTo
+    {
+        return $this->belongsTo(TestCase::class);
+    }
+
+    /**
+     * Belongs To Test Run
+     */
+    public function testRun(): BelongsTo
+    {
+        return $this->belongsTo(TestRun::class);
+    }
 }
