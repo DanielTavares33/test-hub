@@ -81,13 +81,7 @@ class TestRunResource extends Resource
                     ->searchable(),
                 TextColumn::make('status')
                     ->sortable()
-                    ->badge()
-                    ->color(fn($state): string => match ($state->value) {
-                        'pending' => 'warning',
-                        'in progress' => 'info',
-                        'completed' => 'success',
-                        default => 'secondary',
-                    }),
+                    ->badge(),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)

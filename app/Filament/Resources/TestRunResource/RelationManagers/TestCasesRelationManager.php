@@ -37,6 +37,11 @@ class TestCasesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id')
                     ->label('#'),
+                TextColumn::make('name')
+                    ->label('Name'),
+                TextColumn::make('title')
+                    ->label('Title'),
+                    
             ])
             ->filters([
                 //

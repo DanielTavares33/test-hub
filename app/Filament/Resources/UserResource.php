@@ -48,7 +48,8 @@ class UserResource extends Resource
                             ->relationship('roles', 'name')
                             ->label('Role')
                             ->in(Role::all()->pluck('id')->toArray())
-                            ->required(),
+                            ->required()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => ucfirst($record->name)),
                     ]),
             ]);
     }

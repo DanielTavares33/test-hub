@@ -36,7 +36,9 @@ class RoleResource extends Resource
                             ->minLength(3)
                             ->maxLength(255)
                             ->required()
-                            ->autofocus(),
+                            ->formatStateUsing(fn (?string $state): ?string => isset($state) ? ucfirst($state) : null)
+                            ->autofocus()
+                            ->unique(),
                     ]),
             ]);
     }
@@ -51,6 +53,7 @@ class RoleResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
+                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
                     ->label('Name'),
                 TextColumn::make('created_at')
                     ->sortable()
