@@ -48,7 +48,8 @@ class UserResource extends Resource
                             ->relationship('roles', 'name')
                             ->label('Role')
                             ->in(Role::all()->pluck('id')->toArray())
-                            ->required(),
+                            ->required()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => ucfirst($record->name)),
                     ]),
             ]);
     }
@@ -63,6 +64,9 @@ class UserResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return ucfirst($state);
+                    })
                     ->label('Name'),
                 TextColumn::make('email')
                     ->searchable()
@@ -70,6 +74,10 @@ class UserResource extends Resource
                     ->copyable()
                     ->label('Email'),
                 TextColumn::make('roles.name')
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return ucfirst($state);
+                    })
                     ->label('Role'),
                 TextColumn::make('created_at')
                     ->sortable()

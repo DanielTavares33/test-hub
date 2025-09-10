@@ -8,6 +8,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ *
+ *
+ * @property int $id
+ * @property int $project_id
+ * @property int|null $assigned_to
+ * @property string $name
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $start_time
+ * @property \Illuminate\Support\Carbon|null $end_time
+ * @property TestRunStatusEnum $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $assignedTo
+ * @property-read \App\Models\Project $project
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TestCase> $testCases
+ * @property-read int|null $test_cases_count
+ * @method static \Database\Factories\TestRunFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereAssignedTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestRun whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class TestRun extends Model
 {
     use HasFactory;

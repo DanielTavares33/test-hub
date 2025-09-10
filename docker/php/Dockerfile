@@ -1,15 +1,21 @@
-FROM php:8.2-fpm
+FROM php:8.4-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libwebp-dev \
+    libxpm-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libicu-dev \
     zip \
-    unzip
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install \
@@ -41,12 +47,9 @@ RUN composer install --optimize-autoloader --no-dev
 # Install Node.js dependencies (if package.json exists)
 RUN if [ -f package.json ]; then npm install; fi
 
-# Set ownership and permissions
-RUN chown -R www-data:www-data /var/www && \
-    chmod -R 775 /var/www  # Group write access
-
 # Change ownership
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port
 EXPOSE 9000

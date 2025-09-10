@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum ProjectUserRoleEnum: string
 {
-    case TESTER = 'tester';
-    case DEVELOPER = 'developer';
-    case MANAGER = 'manager';
+    case Tester = 'tester';
+    case Developer = 'developer';
+    case Manager = 'manager';
 }

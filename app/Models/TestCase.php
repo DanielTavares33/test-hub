@@ -11,6 +11,43 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $project_id
+ * @property int|null $created_by
+ * @property string $title
+ * @property string $description
+ * @property TestCaseStatusEnum $status
+ * @property TestCasePriorityEnum $priority
+ * @property TestCaseTypeEnum $type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bug> $bugs
+ * @property-read int|null $bugs_count
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\Project $project
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TestCaseStep> $testCaseSteps
+ * @property-read int|null $test_case_steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TestRun> $testRuns
+ * @property-read int|null $test_runs_count
+ * @method static \Database\Factories\TestCaseFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TestCase whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class TestCase extends Model
 {
     use HasFactory;

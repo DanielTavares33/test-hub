@@ -2,9 +2,30 @@
 
 namespace App\Enums;
 
-enum TestRunStatusEnum: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum TestRunStatusEnum: string implements HasLabel, HasColor
 {
-    case PENDING = 'pending';
-    case IN_PROGRESS = 'in progress';
-    case COMPLETED = 'completed';
+    case Pending = 'pending';
+    case Running = 'running';
+    case Completed = 'completed';
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::Pending => 'Pending',
+            self::Running => 'Running',
+            self::Completed => 'Completed',
+        };
+    }
+
+    public function getColor(): ?string
+    {
+        return match ($this) {
+            self::Pending => "primary",
+            self::Running => "warning",
+            self::Completed => "success",
+        };
+    }
 }
