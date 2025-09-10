@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->string('name');
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('status', ['draft', 'active', 'passed', 'failed'])->default('draft');
             $table->enum('priority', ['low', 'medium', 'high'])->default('low');
             $table->enum('type', ['functional', 'regression', 'smoke', 'manual', 'e2e'])->default('manual');

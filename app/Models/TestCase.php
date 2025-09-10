@@ -12,12 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $project_id
  * @property int|null $created_by
  * @property string $title
+ * @property string $name
  * @property string $description
  * @property TestCaseStatusEnum $status
  * @property TestCasePriorityEnum $priority
@@ -58,11 +59,13 @@ class TestCase extends Model
      * @var string[]
      */
     protected $fillable = [
+        'name',
         'title',
         'description',
         'status',
         'priority',
         'type',
+        'project_id',
     ];
 
     /**

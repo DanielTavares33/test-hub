@@ -2,55 +2,61 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use BackedEnum;
 use App\Models\Role;
 use App\Models\User;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Flex;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use App\Filament\Resources\UserResource\Pages;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     public static function canAccess(): bool
     {
         return Auth::user()->hasRole('admin');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Section::make()
-                    ->schema([
-                        TextInput::make('name')
-                            ->label('Name')
-                            ->required()
-                            ->minLength(3)
-                            ->maxLength(255)
-                            ->autofocus(),
-                        TextInput::make('email')
-                            ->label('Email')
-                            ->email()
-                            ->maxLength(255)
-                            ->required(),
-                        Select::make('role')
-                            ->relationship('roles', 'name')
-                            ->label('Role')
-                            ->in(Role::all()->pluck('id')->toArray())
-                            ->required()
-                            ->getOptionLabelFromRecordUsing(fn ($record) => ucfirst($record->name)),
-                    ]),
+                Flex::make([
+                    Section::make()
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Name')
+                                ->required()
+                                ->minLength(3)
+                                ->maxLength(255)
+                                ->autofocus(),
+                            TextInput::make('email')
+                                ->label('Email')
+                                ->email()
+                                ->maxLength(255)
+                                ->required(),
+                            Select::make('role_id')
+                                ->relationship('role', 'name')
+                                ->label('Role')
+                                ->required()
+                                ->getOptionLabelFromRecordUsing(fn(Model $record): string => ucfirst($record->name))
+                        ]),
+                ])->columnSpanFull(),
             ]);
     }
 
@@ -73,7 +79,7 @@ class UserResource extends Resource
                     ->sortable()
                     ->copyable()
                     ->label('Email'),
-                TextColumn::make('roles.name')
+                TextColumn::make('role.name')
                     ->sortable()
                     ->formatStateUsing(function ($state) {
                         return ucfirst($state);
@@ -89,8 +95,8 @@ class UserResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber),

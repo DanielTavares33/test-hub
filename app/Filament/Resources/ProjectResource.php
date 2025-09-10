@@ -4,30 +4,32 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Schemas\Schema;
+use BackedEnum;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Flex;
 
 class ProjectResource extends Resource
 {
-    protected static ?string $model = Project::class;
+    protected static string|BackedEnum|null $navigationIcon = 'carbon-industry';
 
-    protected static ?string $navigationIcon = 'carbon-industry';
-
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Section::make()
+                Flex::make([
+                    Section::make()
                     ->schema([
                         TextInput::make('name')
                             ->label('Name')
@@ -43,6 +45,7 @@ class ProjectResource extends Resource
                             ->nullable()
                             ->rows(3),
                     ]),
+                ])->columnSpanFull(),
             ]);
     }
 
@@ -61,7 +64,7 @@ class ProjectResource extends Resource
                 TextColumn::make('description')
                     ->label('Description')
                     ->limit(20)
-                    ->tooltip(fn ($state) => $state),
+                    ->tooltip(fn($state) => $state),
                 TextColumn::make('users')
                     ->label('Users')
                     ->badge()
@@ -88,7 +91,7 @@ class ProjectResource extends Resource
                     ->alignCenter(),
                 ToggleColumn::make('status')
                     ->label('Is Active')
-                    ->disabled(fn () => Auth::user()->hasRole('guest')),
+                    ->disabled(fn() => Auth::user()->hasRole('guest')),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -101,16 +104,16 @@ class ProjectResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber)
-                    ->visible(fn () => Auth::user()->hasRole('admin')),
-                Tables\Actions\DeleteAction::make()
+                    ->visible(fn() => Auth::user()->hasRole('admin')),
+                DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete')
-                    ->visible(fn () => Auth::user()->hasRole('admin')),
+                    ->visible(fn() => Auth::user()->hasRole('admin')),
             ])
             ->defaultSort('id', 'desc');
     }

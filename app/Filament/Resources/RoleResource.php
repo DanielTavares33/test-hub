@@ -2,44 +2,50 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RoleResource\Pages;
+use BackedEnum;
 use App\Models\Role;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
+use Filament\Schemas\Components\Flex;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use App\Filament\Resources\RoleResource\Pages;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-identification';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-identification';
 
     public static function canAccess(): bool
     {
         return Auth::user()->hasRole('admin');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Section::make()
-                    ->schema([
-                        TextInput::make('name')
-                            ->label('Name')
-                            ->minLength(3)
-                            ->maxLength(255)
-                            ->required()
-                            ->formatStateUsing(fn (?string $state): ?string => isset($state) ? ucfirst($state) : null)
-                            ->autofocus()
-                            ->unique(),
-                    ]),
+                Flex::make([
+                    Section::make()
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Name')
+                                ->minLength(3)
+                                ->maxLength(255)
+                                ->required()
+                                ->formatStateUsing(fn(?string $state): ?string => isset($state) ? ucfirst($state) : null)
+                                ->autofocus()
+                                ->unique(),
+                        ]),
+                ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -53,7 +59,7 @@ class RoleResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
+                    ->formatStateUsing(fn(string $state): string => ucfirst($state))
                     ->label('Name'),
                 TextColumn::make('created_at')
                     ->sortable()
@@ -65,12 +71,12 @@ class RoleResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete'),
             ])
