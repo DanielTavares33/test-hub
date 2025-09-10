@@ -41,6 +41,18 @@ Clone project
   docker exec -it testhub-php bash
 ```
 
+#### Install composer dependencies (inside container)
+
+```bash
+  composer install
+```
+
+#### Install npm dependencies (inside container)
+
+```bash
+  npm install
+```
+
 #### Run migrations and seed database (inside container)
 
 ```bash
@@ -57,7 +69,7 @@ Clone project
 
 ```bash
   http://localhost:8080
-``` 
+```
 
 ## Login Locally
 
