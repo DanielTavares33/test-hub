@@ -12,7 +12,6 @@ use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -20,47 +19,59 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TestRunResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TestRunResource\RelationManagers;
+use BackedEnum;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Collection;
 
 class TestRunResource extends Resource
 {
     protected static ?string $model = TestRun::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-play';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-play';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $form): Schema
     {
         return $form
             ->schema([
-                Section::make()
-                    ->schema([
-                        TextInput::make('name')
-                            ->label('Name')
-                            ->required()
-                            ->minLength(3)
-                            ->maxLength(255)
-                            ->autofocus()
-                            ->columnSpan(1),
-                        Select::make('project_id')
-                            ->label('Project')
-                            ->relationship('project', 'name')
-                            ->required()
-                            ->columnSpan(1),
-                        Select::make('assigned_to')
-                            ->label('Assigned To')
-                            ->relationship('assignedTo', 'name')
-                            ->required()
-                            ->columnSpan(1),
-                        Select::make('status')
-                            ->label('Status')
-                            ->options(TestRunStatusEnum::class)
-                            ->required()
-                            ->columnSpan(1),
-                        Textarea::make('description')
-                            ->label('Description')
-                            ->nullable()
-                            ->rows(3)
-                            ->columnSpanFull(),
-                    ])->columns(),
+                Flex::make([
+                    Section::make()
+                        ->schema([
+                            TextInput::make('name')
+                                ->label('Name')
+                                ->required()
+                                ->minLength(3)
+                                ->maxLength(255)
+                                ->autofocus()
+                                ->columnSpan(1),
+                            Select::make('project_id')
+                                ->label('Project')
+                                ->relationship('project', 'name')
+                                ->required()
+                                ->columnSpan(1),
+                            Select::make('assigned_to')
+                                ->label('Assigned To')
+                                ->relationship('assignedTo', 'name')
+                                ->required()
+                                ->columnSpan(1),
+                            Select::make('status')
+                                ->label('Status')
+                                ->options(TestRunStatusEnum::class)
+                                ->required()
+                                ->columnSpan(1),
+                            Textarea::make('description')
+                                ->label('Description')
+                                ->nullable()
+                                ->rows(3)
+                                ->columnSpanFull(),
+                        ])->columns(),
+                ])->columnSpanFull(),
+
             ]);
     }
 
@@ -94,31 +105,36 @@ class TestRunResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber)
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
                     }),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete')
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
                     }),
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->hiddenLabel()
                     ->tooltip('View')
                     ->hidden(function () {
                         return Auth::user()->hasRole('admin') || Auth::user()->hasRole('tester') || Auth::user()->hasRole('developer');
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+            ->toolbarActions([
+                BulkAction::make('delete')
+                    ->requiresConfirmation()
+                    ->action(function (Collection $records) {
+                        $records->each->delete();
+                    })
+                    ->hidden(function () {
+                        return Auth::user()->hasRole('guest') || Auth::user()->hasRole('developer');
+                    }),
             ])
             ->defaultSort(fn (Builder $query): Builder => $query
                 ->orderByRaw('FIELD(status, "in progress", "pending", "completed")')

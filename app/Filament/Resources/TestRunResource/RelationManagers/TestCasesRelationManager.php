@@ -6,13 +6,16 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Actions\BulkAction;
 use function Laravel\Prompts\form;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
+
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
-
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -20,9 +23,9 @@ class TestCasesRelationManager extends RelationManager
 {
     protected static string $relationship = 'testCases';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\TextInput::make('id')
                     ->required()
@@ -41,7 +44,7 @@ class TestCasesRelationManager extends RelationManager
                     ->label('Name'),
                 TextColumn::make('title')
                     ->label('Title'),
-                    
+
             ])
             ->filters([
                 //
@@ -50,7 +53,7 @@ class TestCasesRelationManager extends RelationManager
                 Action::make('add')
                     ->label('Add')
                     ->icon('heroicon-o-plus')
-                    ->form([
+                    ->schema([
                         Repeater::make('test_cases')
                             ->schema([
                                 Select::make('name')
@@ -66,7 +69,7 @@ class TestCasesRelationManager extends RelationManager
                             ->attach($table->getRecord()->id);
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('delete')
                     ->label('Delete')
                     ->icon('heroicon-o-trash')
@@ -76,10 +79,12 @@ class TestCasesRelationManager extends RelationManager
                             ->detach($table->getRecord()->id);
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+            ->toolbarActions([
+                BulkAction::make('delete')
+                    ->icon('heroicon-o-trash')
+                    ->action(function (Collection $records) {
+                        $records->each->delete();
+                    }),
             ]);
     }
 }

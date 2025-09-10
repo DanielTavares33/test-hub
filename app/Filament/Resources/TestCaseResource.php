@@ -2,32 +2,36 @@
 
 namespace App\Filament\Resources;
 
+use BackedEnum;
 use Filament\Tables;
 use App\Models\TestCase;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
 use App\Enums\TestCaseTypeEnum;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use App\Enums\TestCaseStatusEnum;
+use Filament\Actions\DeleteAction;
 use Filament\Support\Colors\Color;
 use App\Enums\TestCasePriorityEnum;
-use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\TestCaseResource\Pages;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Section;
 
 class TestCaseResource extends Resource
 {
     protected static ?string $model = TestCase::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-pencil';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-pencil';
 
     public static function canEdit($record): bool
     {
@@ -44,11 +48,11 @@ class TestCaseResource extends Resource
         return ! Auth::user()->hasRole('guest');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Split::make([
+                Flex::make([
                     Section::make()
                         ->schema([
                             TextInput::make('name')
@@ -73,7 +77,7 @@ class TestCaseResource extends Resource
                         ])->columns(),
                     Section::make()
                         ->schema([
-                            Select::make('project')
+                            Select::make('project_id')
                                 ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query, $record) {
                                     if ($record) {
                                         return $query->where('id', $record->project_id);
@@ -142,10 +146,11 @@ class TestCaseResource extends Resource
                                     ])
                                     ->required()
                                     ->minLength(3)
+
                                     ->columnSpan(1),
                             ])
                             ->addActionLabel('Add Step'),
-                    ]),
+                    ])->columnSpanFull(),
             ]);
     }
 
@@ -226,21 +231,21 @@ class TestCaseResource extends Resource
                     ->options(TestCaseTypeEnum::class)
                     ->label('Type'),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
+            ->recordActions([
+                EditAction::make()
                     ->hiddenLabel()
                     ->tooltip('Edit')
                     ->color(Color::Amber)
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
                     }),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip('Delete')
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
                     }),
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->hiddenLabel()
                     ->tooltip('View')
                     ->hidden(function () {
