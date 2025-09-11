@@ -94,4 +94,12 @@ class TestRun extends Model
     {
         return $this->belongsToMany(TestCase::class, 'test_case_test_run')->withPivot('result', 'comments');
     }
+
+    /**
+     * Has Many ProjectTestRuns
+     */
+    public function projectTestRuns(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_test_runs');
+    }
 }

@@ -16,4 +16,12 @@ class EditTestRun extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $testRun = $this->record;
+        if ($testRun->project_id) {
+            $testRun->projectTestRuns()->sync([$testRun->project_id]);
+        }
+    }
 }

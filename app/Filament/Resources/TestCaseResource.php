@@ -26,6 +26,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\TestCaseResource\Pages;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 
 class TestCaseResource extends Resource
 {
@@ -78,12 +79,12 @@ class TestCaseResource extends Resource
                     Section::make()
                         ->schema([
                             Select::make('project_id')
-                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query, $record) {
-                                    if ($record) {
-                                        return $query->where('id', $record->project_id);
+                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function ($query, ?TestCase $record) {
+                                    if (!isset($record)) {
+                                        return $query->where('status', true);
                                     }
 
-                                    return $query->where('status', true);
+                                    return $query->where('status', true)->orWhere('id', $record->project_id);
                                 })
                                 ->required()
                                 ->columnSpanFull(),
@@ -217,8 +218,9 @@ class TestCaseResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])
-            ->defaultSort(fn (Builder $query): Builder => $query
-                ->orderByRaw('FIELD(status, "draft", "active", "pending", "failed", "passed")')
+            ->defaultSort(
+                fn(Builder $query): Builder => $query
+                    ->orderByRaw('FIELD(status, "draft", "active", "pending", "failed", "passed")')
             )
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -244,6 +246,9 @@ class TestCaseResource extends Resource
                     ->tooltip('Delete')
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
+                    })
+                    ->after(function (Model $record) {
+                        $record->testCaseSteps()->delete();
                     }),
                 ViewAction::make()
                     ->hiddenLabel()

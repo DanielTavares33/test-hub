@@ -17,7 +17,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TestRunResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TestRunResource\RelationManagers;
 use BackedEnum;
 use Filament\Actions\BulkAction;
@@ -28,6 +27,9 @@ use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Collection;
+use PHPUnit\Event\Code\Test;
+
+use function Livewire\after;
 
 class TestRunResource extends Resource
 {
@@ -51,7 +53,13 @@ class TestRunResource extends Resource
                                 ->columnSpan(1),
                             Select::make('project_id')
                                 ->label('Project')
-                                ->relationship('project', 'name')
+                                ->relationship(name: 'project', titleAttribute: 'name', modifyQueryUsing: function (Builder $query, ?TestRun $record) {
+                                    if (!isset($record)) {
+                                        return $query->where('status', true);
+                                    }
+                                    
+                                    return $query->where('status', true)->orWhere('id', $record->project_id);
+                                })
                                 ->required()
                                 ->columnSpan(1),
                             Select::make('assigned_to')
@@ -118,6 +126,9 @@ class TestRunResource extends Resource
                     ->tooltip('Delete')
                     ->hidden(function () {
                         return Auth::user()->hasRole('guest');
+                    })
+                    ->after(function (TestRun $record) {
+                        $record->projectTestRuns()->delete();
                     }),
                 ViewAction::make()
                     ->hiddenLabel()
