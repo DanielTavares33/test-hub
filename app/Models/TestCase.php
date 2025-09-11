@@ -118,4 +118,12 @@ class TestCase extends Model
     {
         return $this->hasMany(TestCaseStep::class, 'test_case_id');
     }
+
+    /**
+     * Belongs to Many Projects (for project_test_cases pivot table)
+     */
+    public function projectTestCases(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_test_cases');
+    }
 }
