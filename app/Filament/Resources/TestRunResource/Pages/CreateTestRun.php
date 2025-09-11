@@ -12,8 +12,11 @@ class CreateTestRun extends CreateRecord
 {
     protected static string $resource = TestRunResource::class;
 
-    protected function handleRecordCreation(array $data): Model
+    protected function afterCreate(): void
     {
-        return static::getModel()::create($data);
+        $testRun = $this->record;
+        if ($testRun->project_id) {
+            $testRun->projectTestRuns()->syncWithoutDetaching([$testRun->project_id]);
+        }
     }
 }

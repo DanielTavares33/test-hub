@@ -16,4 +16,12 @@ class EditTestCase extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $testCase = $this->record;
+        if ($testCase->project_id) {
+            $testCase->projectTestCases()->syncWithoutDetaching([$testCase->project_id]);
+        }
+    }
 }
